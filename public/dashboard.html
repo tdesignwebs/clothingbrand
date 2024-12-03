@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+
+        .dashboard {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            width: 350px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .dashboard h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .user-count {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00ffab;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            margin-top: 20px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Active Users</h1>
+        <div id="userCount" class="user-count pulse">0</div>
+        <p class="note">Tracking users on the home page in real time.</p>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const userCountElement = document.getElementById('userCount');
+
+        // Smoothly update the user count with animation
+        function updateCount(newCount) {
+            userCountElement.style.transform = 'scale(0.8)';
+            userCountElement.style.opacity = '0';
+
+            setTimeout(() => {
+                userCountElement.textContent = newCount;
+                userCountElement.style.transform = 'scale(1)';
+                userCountElement.style.opacity = '1';
+            }, 300);
+        }
+
+        // Listen for updates from the server
+        socket.on('updateHomePageUsers', (count) => {
+            updateCount(count);
+        });
+    </script>
+</body>
+</html>
